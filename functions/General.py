@@ -20,8 +20,12 @@ class General:
             total = len(accounts)
             for account in accounts:
                 try:
-                    login = account.get('login').lower()
+                    login = account.get('login')
                     password = account.get('password')
+                    if not all((login, password,)):
+                        continue
+
+                    login = login.lower()
                     status = account.get('status')
                     status = status if status else Statuses.New
                     rank = account.get('rank')

@@ -13,9 +13,14 @@ if __name__ == '__main__':
         General.import_accounts()
         if get_accounts():
             if get_random_proxy():
-                check()
-                General.export_accounts()
-                db.execute('DROP TABLE accounts')
+                try:
+                    file = open(file=config.ACCOUNTS_FILE, mode='r+')
+                    check()
+                    General.export_accounts()
+                    db.execute('DROP TABLE accounts')
+
+                except IOError:
+                    print(f"\n{config.RED}You didn't close the {config.ACCOUNTS_FILE} file!{config.RESET_ALL}")
 
             else:
                 print(f"\n{config.RED}You didn't add HTTP IPv4 proxies to the proxies.txt file!{config.RESET_ALL}")
