@@ -12,8 +12,8 @@
 - [File structure](#File-structure)
 - [How to run](#How-to-run)
     - [Windows](#Windows)
-    - [Docker (building)](#Docker-building)
     - [Docker (image)](#Docker-image)
+    - [Docker (building)](#Docker-building)
     - [Source code](#Source-code)
 - [Updating](#Updating)
   - [Windows](#Windows-1)
@@ -29,7 +29,7 @@
 <h1><p align="center">DISCLAIMER</p></h1>
 <p align="right"><a href="#Content">To the content</a></p>
 
-⠀The program has no injections — you can make the code review to make sure. Any cases of third parties gaining access to your account aren't the fault of the developer, but of you or another person. Keep your sensitive data in a safe place.
+⠀The program has no injections — you can make the code review to make sure. Any cases of third parties gaining access to your accounts aren't the fault of the developer, but of you or another person. Keep your sensitive data in a safe place.
 
 ⠀By using this program you have agreed to the above and have no and won't have claims against its developer.
 
