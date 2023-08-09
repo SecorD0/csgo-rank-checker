@@ -25,7 +25,7 @@ class General:
                     if not all((login, password,)):
                         continue
 
-                    login = login.lower()
+                    login = str(login).lower()
                     status = account.get('status')
                     status = status if status else Statuses.New
                     rank = account.get('rank')
@@ -40,13 +40,13 @@ class General:
 
                         elif not account_instance:
                             account_instance = Account(login=login, password=password, status=status, rank=rank)
-                            db.insert(account_instance)
                             imported.append(account_instance)
 
                 except BaseException as e:
                     logging.exception('General.import_accounts')
                     print(f'{config.RED}Failed to import an account: {e}{config.RESET_ALL}')
 
+            db.insert(imported)
             print(
                 f'Done! {config.LIGHTGREEN_EX}{len(imported)}/{total}{config.RESET_ALL} accounts were imported, '
                 f'password have been changed at {config.LIGHTGREEN_EX}{len(edited)}/{total}{config.RESET_ALL}.'
