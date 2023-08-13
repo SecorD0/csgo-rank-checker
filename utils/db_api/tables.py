@@ -18,9 +18,14 @@ class Account(Base, AutoRepr):
     password = Column(Text)
     status = Column(Text)
     rank = Column(Integer)
+    last_online = Column(Integer)
 
-    def __init__(self, login: str, password: str, status: str = Statuses.New, rank: Optional[int] = None) -> None:
+    def __init__(
+            self, login: str, password: str, status: str = Statuses.New, rank: Optional[int] = None,
+            last_online: Optional[int] = None
+    ) -> None:
         self.login = login
         self.password = password
         self.status = status
         self.rank = rank
+        self.last_online = last_online

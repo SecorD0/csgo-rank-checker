@@ -2,6 +2,7 @@ import logging
 
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
+from pretty_utils.miscellaneous.time_and_date import unix_to_strtime, strtime_to_unix
 
 from data import config
 from data.models import Statuses
@@ -30,6 +31,10 @@ class General:
                     status = status if status else Statuses.New
                     rank = account.get('rank')
                     rank = int(rank) if rank else None
+                    last_online = account.get('last_online')
+                    last_online = strtime_to_unix(
+                        strtime=last_online, format='%d.%m.%Y %H:%M:%S'
+                    ) if last_online else None
                     if login:
                         account_instance = get_account(login=login)
                         if account_instance and account_instance.password != password:
@@ -39,7 +44,10 @@ class General:
                             edited.append(account_instance)
 
                         elif not account_instance:
-                            account_instance = Account(login=login, password=password, status=status, rank=rank)
+                            account_instance = Account(
+                                login=login, password=password, status=status, rank=rank,
+                                last_online=last_online
+                            )
                             imported.append(account_instance)
 
                 except BaseException as e:
@@ -67,7 +75,12 @@ class General:
                 cell.value = row + 1
 
                 for column, value in enumerate(account[1:]):
-                    sheet.cell(row=row + 2, column=column + 2).value = value
+                    cell = sheet.cell(row=row + 2, column=column + 2)
+                    if value and column == 4:
+                        value = unix_to_strtime(value)
+                        cell.number_format = 'DD.MM.YYYY HH:MM'
+
+                    cell.value = value
 
             spreadsheet.save(config.ACCOUNTS_FILE)
             print(
