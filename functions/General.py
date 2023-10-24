@@ -18,7 +18,7 @@ class General:
         accounts = read_spreadsheet(path=config.ACCOUNTS_FILE)
         if accounts:
             print('Importing accounts...')
-            imported = []
+            imported = {}
             edited = []
             total = len(accounts)
             account_lists = split_list(s_list=accounts, n=1000)
@@ -40,21 +40,20 @@ class General:
                         last_online = strtime_to_unix(
                             strtime=last_online, format='%d.%m.%Y %H:%M:%S'
                         ) if last_online else None
-                        if login:
-                            account_instance = get_account(login=login)
-                            if account_instance and account_instance.password != password:
-                                account_instance.password = password
-                                account_instance.status = Statuses.New
-                                db.commit()
-                                edited.append(account_instance)
+                        account_instance = get_account(login=login)
+                        if account_instance and account_instance.password != password:
+                            account_instance.password = password
+                            account_instance.status = Statuses.New
+                            db.commit()
+                            edited.append(account_instance)
 
-                            elif not account_instance:
-                                account_instance = Account(
-                                    login=login, password=password, status=status, rank=rank,
-                                    last_online=last_online
-                                )
-                                insert_it.append(account_instance)
-                                imported.append(account_instance)
+                        elif not account_instance and login not in imported:
+                            account_instance = Account(
+                                login=login, password=password, status=status, rank=rank,
+                                last_online=last_online
+                            )
+                            insert_it.append(account_instance)
+                            imported[login] = account_instance
 
                     except BaseException as e:
                         logging.exception('General.import_accounts')
