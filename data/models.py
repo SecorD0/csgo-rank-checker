@@ -27,5 +27,5 @@ class Settings(Singleton, AutoRepr):
 class Statuses:
     New = 'new'
     WrongCredentials = 'wrong credentials'
-    EmailGuard = 'email guard'
+    CodeRequired = 'code required'
     Checked = 'checked'

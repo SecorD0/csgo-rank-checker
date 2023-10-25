@@ -77,9 +77,11 @@
 6. Insert HTTP IPv4 proxies in the `login:password@ip:port` format into the `proxies.txt` file.
 7. Run the program again, wait for it to finish and close it.
 8. Open the `accounts.xlsx` spreadsheet to view the results. You can see the following account statuses:
-   - `new` — an account that, for whatever reason, wasn't checked;
-   - `wrong credentials` — a wrong login or password;
-   - `email guard` — the account is enabled to receive Steam Guard codes to the email, and the program doesn't support this type of authentication;
+   - `new` — an account that, for whatever reason, wasn't checked.
+   - `wrong credentials` — a wrong login or password.
+   - `code required`:
+     - The account is enabled to receive Steam Guard codes to the email, and the program doesn't support this type of authentication;
+     - Couldn't find a maFile to generate Steam Guard code for this account.
    - `checked` — the account was successfully checked.
 9. If for some reason there are unchecked accounts left, you can go back to step `7`.
 
@@ -102,9 +104,11 @@ docker run -it --rm -v $HOME/csgo-rank-checker/files:/program/files --name csgo-
 docker run -it --rm -v $HOME/csgo-rank-checker/files:/program/files --name csgo-rank-checker ghcr.io/secord0/csgo-rank-checker:main
 ```
 7. Open the `accounts.xlsx` spreadsheet to view the results. You can see the following account statuses:
-   - `new` — an account that, for whatever reason, wasn't checked;
-   - `wrong credentials` — a wrong login or password;
-   - `email guard` — the account is enabled to receive Steam Guard codes to the email, and the program doesn't support this type of authentication;
+   - `new` — an account that, for whatever reason, wasn't checked.
+   - `wrong credentials` — a wrong login or password.
+   - `code required`:
+     - The account is enabled to receive Steam Guard codes to the email, and the program doesn't support this type of authentication;
+     - Couldn't find a maFile to generate Steam Guard code for this account.
    - `checked` — the account was successfully checked.
 8. If for some reason there are unchecked accounts left, you can go back to step `6`.
 
@@ -139,10 +143,12 @@ docker run -it --rm -v $HOME/csgo-rank-checker/:/program --name csgo-rank-checke
 docker run -it --rm -v $HOME/csgo-rank-checker/:/program --name csgo-rank-checker csgo-rank-checker
 ```
 10. Open the `accounts.xlsx` spreadsheet to view the results. You can see the following account statuses:
-    - `new` — an account that, for whatever reason, wasn't checked;
-    - `wrong credentials` — a wrong login or password;
-    - `email guard` — the account is enabled to receive Steam Guard codes to the email, and the program doesn't support this type of authentication;
-    - `checked` — the account was successfully checked.
+   - `new` — an account that, for whatever reason, wasn't checked.
+   - `wrong credentials` — a wrong login or password.
+   - `code required`:
+     - The account is enabled to receive Steam Guard codes to the email, and the program doesn't support this type of authentication;
+     - Couldn't find a maFile to generate Steam Guard code for this account.
+   - `checked` — the account was successfully checked.
 11. If for some reason there are unchecked accounts left, you can go back to step `9`.
 
 
@@ -168,10 +174,12 @@ pip install -r requirements.txt
 9. Insert HTTP IPv4 proxies in the `login:password@ip:port` format into the `proxies.txt` file.
 10. Run the `app.py` again, wait for it to finish and close it.
 11. Open the `accounts.xlsx` spreadsheet to view the results. You can see the following account statuses:
-    - `new` — an account that, for whatever reason, wasn't checked;
-    - `wrong credentials` — a wrong login or password;
-    - `email guard` — the account is enabled to receive Steam Guard codes to the email, and the program doesn't support this type of authentication;
-    - `checked` — the account was successfully checked.
+   - `new` — an account that, for whatever reason, wasn't checked.
+   - `wrong credentials` — a wrong login or password.
+   - `code required`:
+     - The account is enabled to receive Steam Guard codes to the email, and the program doesn't support this type of authentication;
+     - Couldn't find a maFile to generate Steam Guard code for this account.
+   - `checked` — the account was successfully checked.
 12. If for some reason there are unchecked accounts left, you can go back to step `10`.
 
 

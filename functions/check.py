@@ -1,14 +1,14 @@
 import logging
 import re
 import time
+from typing import Union
 
 from bs4 import BeautifulSoup as BS
-from pretty_utils.miscellaneous.files import read_json
 from pretty_utils.miscellaneous.time_and_date import unix_to_strtime
 from pretty_utils.type_functions.strings import text_between
-from py_steam import exceptions
-from py_steam.client import WebClient
-from py_steam.guard import generate_one_time_code
+from steampy import exceptions
+from steampy.client import SteamClient
+from steampy.models import SteamUrl
 
 from data import config
 from data.models import Statuses, Settings
@@ -18,8 +18,8 @@ from utils.miscellaneous.get_random_proxy import get_random_proxy
 from utils.miscellaneous.print_to_log import print_to_log
 
 
-def get_rank(client: WebClient) -> int:
-    html = client.session.get(url=f'{client.steamid.profile_url}/gcpd/730')
+def get_rank(steam_client: SteamClient, steam_id: Union[str, int]) -> int:
+    html = steam_client._session.get(url=f'{SteamUrl.COMMUNITY_URL}/profiles/{steam_id}/gcpd/730')
     soup = BS(html.text, 'html.parser')
     elements = soup.find_all('div', class_='generic_kv_line')
     for element in elements:
@@ -39,22 +39,23 @@ def check() -> None:
         total = len(unchecked_accounts)
         for i, account in enumerate(unchecked_accounts):
             try:
-                client = WebClient(proxy=get_random_proxy())
-                twofactor_code = ''
-                if account.login in mafiles:
-                    twofactor_code = generate_one_time_code(
-                        shared_secret=read_json(mafiles[account.login]).get('shared_secret')
-                    )
+                proxy = get_random_proxy()
+                if 'http' not in proxy:
+                    proxy = f'http://{proxy}'
 
-                client.login(username=account.login, password=account.password, twofactor_code=twofactor_code)
+                steam_client = SteamClient(api_key='', proxies={'http': proxy, 'https': proxy})
+                steam_client.login(
+                    username=account.login, password=account.password, steam_guard=mafiles[account.login]
+                )
                 account.status = Statuses.Checked
-                account.rank = get_rank(client=client)
+                steam_id = steam_client.get_steam_id()
+                account.rank = get_rank(steam_client=steam_client, steam_id=steam_id)
                 text = f'Rank: {account.rank}'
                 if settings.parse.last_online:
                     try:
-                        profile = client.session.get(client.steamid.profile_url)
+                        profile_page = steam_client._session.get(f'{SteamUrl.COMMUNITY_URL}/profiles/{steam_id}')
                         last_online = text_between(
-                            text=profile.text, begin='<div class="profile_in_game_name">', end='</div>'
+                            text=profile_page.text, begin='<div class="profile_in_game_name">', end='</div>'
                         )
                         seconds_multiplier = 0
                         surcharge = 0
@@ -87,28 +88,22 @@ def check() -> None:
 
                 print_to_log(text=text, color=color, i=i, total=total, account=account)
 
-            except exceptions.LoginIncorrect:
+            except exceptions.InvalidCredentials:
                 account.status = Statuses.WrongCredentials
                 print_to_log(text='Wrong credentials!', color=failed_color, i=i, total=total, account=account)
 
             except exceptions.CaptchaRequired:
                 print_to_log(text='Captcha required!', color=failed_color, i=i, total=total, account=account)
 
-            except exceptions.TwoFactorCodeRequired:
-                print_to_log(
-                    text='Invalid maFile or already used Steam Guard code!', color=failed_color, i=i, total=total,
-                    account=account
-                )
+            except exceptions.ConfirmationExpected:
+                account.status = Statuses.CodeRequired
+                print_to_log(text='Confirmation code required!', color=failed_color, i=i, total=total, account=account)
 
-            except exceptions.TooManyLoginFailures:
+            except exceptions.TooManyRequests:
                 print_to_log(text='Too many login failures!', color=failed_color, i=i, total=total, account=account)
 
-            except exceptions.EmailCodeRequired:
-                account.status = Statuses.EmailGuard
-                print_to_log(
-                    text='The account is enabled to receive Steam Guard codes to the email!', color=failed_color, i=i,
-                    total=total, account=account
-                )
+            except exceptions.ProxyConnectionError:
+                print_to_log(text="The proxy doesn't work!", color=failed_color, i=i, total=total, account=account)
 
             except BaseException as e:
                 logging.exception(f'check | {account.login}')
