@@ -9,6 +9,7 @@ from data import config
 # ----- Settings
 @dataclass
 class Parse:
+    rank: bool
     last_online: bool
 
 
@@ -18,14 +19,11 @@ class Settings(Singleton, AutoRepr):
 
         # --- Parse
         parse = json['parse']
-        self.parse = Parse(
-            last_online=parse['last_online']
-        )
+        self.parse = Parse(rank=parse['rank'], last_online=parse['last_online'])
 
 
 # ----- Script
 class Statuses:
     New = 'new'
     WrongCredentials = 'wrong credentials'
-    CodeRequired = 'code required'
     Checked = 'checked'

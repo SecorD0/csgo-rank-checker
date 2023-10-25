@@ -21,6 +21,7 @@ def create_files():
 
     settings = {
         'parse': {
+            'rank': True,
             'last_online': False
         }
     }
