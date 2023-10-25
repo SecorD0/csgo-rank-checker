@@ -9,6 +9,7 @@ from utils.miscellaneous.get_random_proxy import get_random_proxy
 
 if __name__ == '__main__':
     try:
+        print(f'\nSoftware version: {config.GREEN}{config.VERSION}{config.RESET_ALL}\n')
         create_files()
         General.import_accounts()
         if get_accounts():

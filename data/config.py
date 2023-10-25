@@ -33,3 +33,5 @@ ERRORS_FILE = os.path.join(FILES_DIR, 'errors.log')
 ACCOUNTS_FILE = os.path.join(FILES_DIR, 'accounts.xlsx')
 PROXIES_FILE = os.path.join(FILES_DIR, 'proxies.txt')
 SETTINGS_FILE = os.path.join(FILES_DIR, 'settings.json')
+
+VERSION = '1.3.3'
